@@ -4,31 +4,33 @@ package com.github.achaaab.retrocar;
  * @author Jonathan Guéhenneux
  * @since 0.0.0
  */
-public class RetroBorder {
+public class RetroBorder extends RetroComponent {
 
-	private final RetroScreen screen;
+	private final int x0;
+	private final int x1;
 
 	private final int on;
 	private final int off;
 
-	private double borderY;
-
 	/**
 	 * @param screen
+	 * @param x0
+	 * @param x1
 	 * @param on
 	 * @param off
 	 * @since 0.0.0
 	 */
-	public RetroBorder(RetroScreen screen, int on, int off) {
+	public RetroBorder(RetroScreen screen, int x0, int x1, int on, int off) {
 
-		this.screen = screen;
+		super(screen, x0, 0);
+
+		this.x0 = x0;
+		this.x1 = x1;
 
 		this.on = on;
 		this.off = off;
 
-		borderY = 0;
-
-		draw();
+		draw(true);
 	}
 
 	/**
@@ -37,27 +39,21 @@ public class RetroBorder {
 	 */
 	public void move(double dY) {
 
-		borderY += dY;
-
-		draw();
+		y += dY;
+		draw(true);
 	}
 
-	/**
-	 * @since 0.0.0
-	 */
-	private void draw() {
+	@Override
+	public void draw(boolean pixel) {
 
-		int screenWidth = screen.getWidth();
 		int screenHeight = screen.getHeight();
 
-		boolean pixel;
+		for (var y = 0; y < screenHeight; y++) {
 
-		for (int y = 0; y < screenHeight; y++) {
+			pixel = (this.y - y) % (on + off) < on;
 
-			pixel = (borderY - y) % (on + off) < on;
-
-			screen.setPixel(0, y, pixel);
-			screen.setPixel(screenWidth - 1, y, pixel);
+			screen.setPixel(x0, y, pixel);
+			screen.setPixel(x1, y, pixel);
 		}
 	}
 }

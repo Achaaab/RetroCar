@@ -1,28 +1,23 @@
 package com.github.achaaab.retrocar;
 
+import static java.lang.Math.round;
+import static java.lang.Math.toIntExact;
+
 /**
  * @author Jonathan Guéhenneux
  * @since 0.0.0
  */
-public class RetroCar {
-
-	private final RetroScreen screen;
-
-	private double x;
-	private double y;
+public class RetroCar extends RetroComponent {
 
 	/**
+	 * @param screen
 	 * @param x
 	 * @param y
-	 * @param screen
 	 * @since 0.0.0
 	 */
-	public RetroCar(double x, double y, RetroScreen screen) {
+	public RetroCar(RetroScreen screen, double x, double y) {
 
-		this.x = x;
-		this.y = y;
-
-		this.screen = screen;
+		super(screen, x, y);
 
 		draw(true);
 	}
@@ -42,37 +37,18 @@ public class RetroCar {
 		draw(true);
 	}
 
-	/**
-	 * @param pixel
-	 * @since 0.0.0
-	 */
-	private void draw(boolean pixel) {
+	@Override
+	public void draw(boolean pixel) {
 
-		int roundedX = (int) Math.round(x);
-		int roundedY = (int) Math.round(y);
-		
+		var roundedX = toIntExact(round(x));
+		var roundedY = toIntExact(round(y));
+
 		screen.setPixel(roundedX, roundedY + 3, pixel);
 		screen.setPixel(roundedX, roundedY + 1, pixel);
 		screen.setPixel(roundedX + 1, roundedY + 2, pixel);
 		screen.setPixel(roundedX + 1, roundedY + 1, pixel);
-		screen.setPixel(roundedX + 1, roundedY + 0, pixel);
+		screen.setPixel(roundedX + 1, roundedY, pixel);
 		screen.setPixel(roundedX + 2, roundedY + 3, pixel);
 		screen.setPixel(roundedX + 2, roundedY + 1, pixel);
-	}
-
-	/**
-	 * @return x
-	 * @since 0.0.0
-	 */
-	public double getX() {
-		return x;
-	}
-
-	/**
-	 * @return y
-	 * @since 0.0.0
-	 */
-	public double getY() {
-		return y;
 	}
 }

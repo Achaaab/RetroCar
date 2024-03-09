@@ -120,11 +120,11 @@ public class WaveGenerator implements Runnable {
 		h3 = 0.25;
 		h4 = 0.125;
 
-		a0 = 1;
-		a1 = 2;
-		a2 = 3;
+		a0 = 0.5;
+		a1 = 1;
+		a2 = 2;
 		a3 = 4;
-		a4 = 5;
+		a4 = 8;
 
 		double i0, i1, i2, i3, i4;
 		double f0, f1, f2, f3, f4;
@@ -154,11 +154,11 @@ public class WaveGenerator implements Runnable {
 				i3 %= SAMPLING_RATE;
 				i4 %= SAMPLING_RATE;
 
-				s0 = a0 * PULSE[(int) i0];
-				s1 = a1 * PULSE[(int) i1];
-				s2 = a2 * SAWTOOTH[(int) i2];
-				s3 = a3 * SINE[(int) i3];
-				s4 = a4 * SINE[(int) i4];
+				s0 = a0 * SINE[(int) i0];
+				s1 = a1 * SQUARE[(int) i1];
+				s2 = a2 * SQUARE[(int) i2];
+				s3 = a3 * PULSE[(int) i3];
+				s4 = a4 * PULSE[(int) i4];
 
 				sample = (s0 + s1 + s2 + s3 + s4) / (a0 + a1 + a2 + a3 + a4);
 

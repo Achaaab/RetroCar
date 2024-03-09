@@ -16,7 +16,7 @@ public abstract class RetroGame implements EventHandler<KeyEvent> {
 	 * @since 0.0.0
 	 */
 	public RetroGame() {
-		screen = new RetroScreen(11, 30);
+		screen = new RetroScreen(24, 40);
 	}
 
 	/**
