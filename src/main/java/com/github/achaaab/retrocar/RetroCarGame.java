@@ -1,17 +1,17 @@
-package fr.guehenneux.retrocar;
-
-import java.util.LinkedList;
-import java.util.Queue;
-import java.util.Random;
-
-import javax.sound.sampled.LineUnavailableException;
+package com.github.achaaab.retrocar;
 
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.util.Duration;
 
+import javax.sound.sampled.LineUnavailableException;
+import java.util.LinkedList;
+import java.util.Queue;
+import java.util.Random;
+
 /**
- * @author Jonathan Guéhenneux
+ * @author Jonathan GuÃ©henneux
+ * @since 0.0.0
  */
 public class RetroCarGame extends RetroGame {
 
@@ -24,29 +24,22 @@ public class RetroCarGame extends RetroGame {
 	// traffic speed
 	private static final double TRAFFIC_SPPED = 14;
 
-	private static final double[] FORCED_SPEEDS = { 20.4, 25.0, 28.8, 32.1, 35.0, 37.6, 39.9, 42.2, 44.2, 46.2, 48.0,
-			49.8, 51.5, 53.1, 54.6, 56.1, 57.6, 58.9, 60.3, 61.6, 62.9 };
-
-	private Random random;
-
-	private int laneCount;
-
-	private RetroCar playerCar;
-	private RetroBorder border;
-	private Queue<RetroCar> traffic;
+	private final Random random;
+	private final int laneCount;
+	private final RetroCar playerCar;
+	private final RetroBorder border;
+	private final Queue<RetroCar> traffic;
+	private final WaveGenerator waveGenerator;
 
 	private double playerCarSpeed;
 	private double nextCarsDistance;
 
 	private boolean accelerate;
 	private boolean brake;
-	private int level;
-	private double time;
-	
-	private WaveGenerator waveGenerator;
 
 	/**
-	 * @throws LineUnavailableException 
+	 * @throws LineUnavailableException
+	 * @since 0.0.0
 	 */
 	public RetroCarGame() throws LineUnavailableException {
 
@@ -54,62 +47,105 @@ public class RetroCarGame extends RetroGame {
 
 		laneCount = 3;
 
-		time = 0;
-
-		playerCarSpeed = 0;
+		playerCarSpeed = 2;
 		accelerate = false;
 		brake = false;
 
 		int screenHeight = screen.getHeight();
 
-		playerCar = new RetroCar(laneCount == 2 ? 2 : 1, screenHeight - 4, screen);
+		playerCar = new RetroCar(laneCount == 2 ? 1 : 4, screenHeight - 4, screen);
 		border = new RetroBorder(screen, 2, 6);
 		traffic = new LinkedList<>();
 
 		nextCarsDistance = 20;
 
 		waveGenerator = new WaveGenerator();
-		waveGenerator.setFrequency(1);
+		waveGenerator.setFrequency(getEngineSpeed(playerCarSpeed) / 10);
 		new Thread(waveGenerator).start();
+	}
+
+	/**
+	 * We roughly simulate an 8-gear, 600 to 9'000 RPM engine.
+	 *
+	 * @param carSpeed
+	 * @return
+	 */
+	private double getEngineSpeed(double carSpeed) {
+
+		double engineSpeed;
+
+		if (carSpeed < 30) {
+
+			// 1st gear
+			engineSpeed = 9_000 * carSpeed / 30;
+
+		} else if (carSpeed < 37) {
+
+			// 2nd gear
+			engineSpeed = 9_000 * carSpeed / 37;
+
+		} else if (carSpeed < 47) {
+
+			// 3rd gear
+			engineSpeed = 9_000 * carSpeed / 47;
+
+		} else if (carSpeed < 58) {
+
+			// 4th gear
+			engineSpeed = 9_000 * carSpeed / 58;
+
+		} else if (carSpeed < 72) {
+
+			// 5th gear
+			engineSpeed = 9_000 * carSpeed / 72;
+
+		} else if (carSpeed < 90) {
+
+			// 6th gear
+			engineSpeed = 9_000 * carSpeed / 90;
+
+		} else if (carSpeed < 112) {
+
+			// 7th gear
+			engineSpeed = 9_000 * carSpeed / 112;
+
+		} else {
+
+			// 8th gear
+			engineSpeed = 9_000 * carSpeed / 139;
+		}
+
+		return engineSpeed;
 	}
 
 	@Override
 	public void update(Duration duration) {
 
-		time += duration.toSeconds();
-		level = (int) Math.floor(time / 20);
-		double forcedSpeed = FORCED_SPEEDS[level];
+		var engineSpeed = getEngineSpeed(playerCarSpeed);
+		var engineForce = 20.0;
+		var brakeForce = -30.0;
+		var engineBrakeForce = -0.0001 * engineSpeed;
+		var dragForce = -0.001 * playerCarSpeed * playerCarSpeed;
 
-		// drag force
-		playerCarSpeed -= 0.0025 * playerCarSpeed * playerCarSpeed * duration.toSeconds();
+		var force = dragForce + engineBrakeForce;
 
-		if (accelerate || playerCarSpeed < forcedSpeed) {
-
-			// acceleration force
-			playerCarSpeed += 20 * duration.toSeconds();
-
-			if (!accelerate && playerCarSpeed > forcedSpeed) {
-				playerCarSpeed = forcedSpeed;
-			}
-
-		} else {
-
-			if (brake) {
-
-				// brake force
-				playerCarSpeed -= 20 * duration.toSeconds();
-			}
-
-			if (playerCarSpeed < forcedSpeed) {
-				playerCarSpeed = forcedSpeed;
-			}
+		if (accelerate) {
+			force += engineForce;
+		} else if (brake) {
+			force += brakeForce;
 		}
 
-		waveGenerator.setFrequency(6 * (7000 + (playerCarSpeed % 20) / 20 * (8250 - 7000)) / 60);
+		playerCarSpeed += force * duration.toSeconds();
 
-		double playerCarDistance = playerCarSpeed * duration.toSeconds();
-		double trafficDistance = TRAFFIC_SPPED * duration.toSeconds();
-		double relativeTrafficDistance = playerCarDistance - trafficDistance;
+		if (playerCarSpeed < 2) {
+			playerCarSpeed = 2;
+		}
+
+		waveGenerator.setFrequency(getEngineSpeed(playerCarSpeed) / 8);
+
+		var playerCarDistance = playerCarSpeed * duration.toSeconds();
+		var trafficDistance = TRAFFIC_SPPED * duration.toSeconds();
+		var relativeTrafficDistance = playerCarDistance - trafficDistance;
 
 		border.move(playerCarDistance);
 		moveCars(relativeTrafficDistance);
@@ -124,7 +160,7 @@ public class RetroCarGame extends RetroGame {
 	}
 
 	/**
-	 * 
+	 * @since 0.0.0
 	 */
 	private void moveCars(double distance) {
 
@@ -134,7 +170,7 @@ public class RetroCarGame extends RetroGame {
 	}
 
 	/**
-	 * 
+	 * @since 0.0.0
 	 */
 	private void spawnCars() {
 
@@ -145,11 +181,11 @@ public class RetroCarGame extends RetroGame {
 			randomNumber = 1 + random.nextInt(2);
 
 			if ((randomNumber & 0b10) != 0) {
-				traffic.offer(new RetroCar(2, -4, screen));
+				traffic.offer(new RetroCar(1, -4, screen));
 			}
 
 			if ((randomNumber & 0b01) != 0) {
-				traffic.offer(new RetroCar(6, -4, screen));
+				traffic.offer(new RetroCar(4, -4, screen));
 			}
 
 		} else {
@@ -173,7 +209,7 @@ public class RetroCarGame extends RetroGame {
 	}
 
 	/**
-	 * 
+	 * @since 0.0.0
 	 */
 	private void removeCars() {
 

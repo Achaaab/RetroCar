@@ -1,18 +1,20 @@
-package fr.guehenneux.retrocar;
+package com.github.achaaab.retrocar;
 
 /**
- * @author Jonathan Guéhenneux
+ * @author Jonathan GuÃ©henneux
+ * @since 0.0.0
  */
 public class RetroScreen {
 
-	private int width;
-	private int height;
+	private final int width;
+	private final int height;
 
-	private boolean[][] pixels;
+	private final boolean[][] pixels;
 
 	/**
 	 * @param width
 	 * @param height
+	 * @since 0.0.0
 	 */
 	public RetroScreen(int width, int height) {
 
@@ -23,14 +25,16 @@ public class RetroScreen {
 	}
 
 	/**
-	 * @return the width
+	 * @return width
+	 * @since 0.0.0
 	 */
 	public int getWidth() {
 		return width;
 	}
 
 	/**
-	 * @return the height
+	 * @return height
+	 * @since 0.0.0
 	 */
 	public int getHeight() {
 		return height;
@@ -40,6 +44,7 @@ public class RetroScreen {
 	 * @param x
 	 * @param y
 	 * @return
+	 * @since 0.0.0
 	 */
 	public boolean getPixel(int x, int y) {
 		return pixels[x][y];
@@ -49,6 +54,7 @@ public class RetroScreen {
 	 * @param x
 	 * @param y
 	 * @param pixel
+	 * @since 0.0.0
 	 */
 	public void setPixel(int x, int y, boolean pixel) {
 

@@ -1,4 +1,4 @@
-package fr.guehenneux.retrocar;
+package com.github.achaaab.retrocar;
 
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
@@ -6,7 +6,8 @@ import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
 
 /**
- * @author Jonathan Guéhenneux
+ * @author Jonathan GuÃ©henneux
+ * @since 0.0.0
  */
 public class RetroScreenGui extends Canvas {
 
@@ -17,13 +18,14 @@ public class RetroScreenGui extends Canvas {
 	private static final int PIXEL_WIDTH = 12;
 	private static final int PIXEL_HEIGHT = 12;
 
-	private RetroScreen model;
+	private final RetroScreen model;
 
-	private int width;
-	private int height;
+	private final int width;
+	private final int height;
 
 	/**
 	 * @param model
+	 * @since 0.0.0
 	 */
 	public RetroScreenGui(RetroScreen model) {
 
@@ -37,11 +39,11 @@ public class RetroScreenGui extends Canvas {
 	}
 
 	/**
-	 * 
+	 * @since 0.0.0
 	 */
 	public void draw() {
 
-		GraphicsContext graphicsContext = getGraphicsContext2D();
+		var graphicsContext = getGraphicsContext2D();
 		graphicsContext.setFill(BACKGROUND);
 		graphicsContext.fillRect(0, 0, width * PIXEL_WIDTH, height * PIXEL_HEIGHT);
 
@@ -59,10 +61,11 @@ public class RetroScreenGui extends Canvas {
 	/**
 	 * @param x
 	 * @param y
+	 * @since 0.0.0
 	 */
 	private void drawPixel(GraphicsContext graphicsContext, int x, int y, boolean pixel) {
 
-		Paint paint = pixel ? PIXEL_ON : PIXEL_OFF;
+		var paint = pixel ? PIXEL_ON : PIXEL_OFF;
 
 		graphicsContext.setFill(paint);
 		graphicsContext.setStroke(paint);

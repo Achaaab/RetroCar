@@ -1,18 +1,19 @@
-package fr.guehenneux.retrocar;
+package com.github.achaaab.retrocar;
 
 import javafx.event.EventHandler;
 import javafx.scene.input.KeyEvent;
 import javafx.util.Duration;
 
 /**
- * @author Jonathan Guéhenneux
+ * @author Jonathan GuÃ©henneux
+ * @since 0.0.0
  */
 public abstract class RetroGame implements EventHandler<KeyEvent> {
 
 	protected RetroScreen screen;
 
 	/**
-	 * 
+	 * @since 0.0.0
 	 */
 	public RetroGame() {
 		screen = new RetroScreen(11, 30);
@@ -20,11 +21,13 @@ public abstract class RetroGame implements EventHandler<KeyEvent> {
 
 	/**
 	 * @param duration
+	 * @since 0.0.0
 	 */
 	public abstract void update(Duration duration);
 
 	/**
-	 * @return the screen
+	 * @return screen
+	 * @since 0.0.0
 	 */
 	public RetroScreen getScreen() {
 		return screen;

@@ -1,17 +1,19 @@
-package fr.guehenneux.retrocar;
+package com.github.achaaab.retrocar;
 
 import javax.sound.sampled.AudioFormat;
-import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.DataLine;
 import javax.sound.sampled.LineUnavailableException;
 import javax.sound.sampled.SourceDataLine;
 
+import static javax.sound.sampled.AudioSystem.getLine;
+
 /**
- * @author Jonathan Guéhenneux
+ * @author Jonathan GuÃ©henneux
+ * @since 0.0.0
  */
 public class WaveGenerator implements Runnable {
 
-	private static final int BUFFER_SIZE = 1024;
+	private static final int BUFFER_SIZE = 441;
 	private static final int SAMPLING_RATE = 44100;
 	private static final int SAMPLE_SIZE = 1;
 	private static final int CHANNEL_COUNT = 1;
@@ -19,27 +21,27 @@ public class WaveGenerator implements Runnable {
 	private static final boolean BIG_ENDIAN = true;
 	private static final double AMPLIFICATION = 0.02;
 
-	private static final AudioFormat FORMAT = new AudioFormat(SAMPLING_RATE, SAMPLE_SIZE * 8, CHANNEL_COUNT, SIGNED,
-			BIG_ENDIAN);
+	private static final AudioFormat FORMAT =
+			new AudioFormat(SAMPLING_RATE, SAMPLE_SIZE * 8, CHANNEL_COUNT, SIGNED, BIG_ENDIAN);
 
 	private static final double[] SINE;
 	private static final double[] SQUARE;
 	private static final double[] SAWTOOTH;
-	private static final double[] RECTANGLE;
+	private static final double[] PULSE;
 
 	static {
 
 		SINE = new double[SAMPLING_RATE];
 		SQUARE = new double[SAMPLING_RATE];
 		SAWTOOTH = new double[SAMPLING_RATE];
-		RECTANGLE = new double[SAMPLING_RATE];
+		PULSE = new double[SAMPLING_RATE];
 
 		for (int sampleIndex = 0; sampleIndex < SAMPLING_RATE; sampleIndex++) {
 
 			SINE[sampleIndex] = AMPLIFICATION * (Math.sin(2 * Math.PI * sampleIndex / SAMPLING_RATE));
 			SQUARE[sampleIndex] = AMPLIFICATION * (sampleIndex < SAMPLING_RATE / 2 ? 1 : -1);
 			SAWTOOTH[sampleIndex] = AMPLIFICATION * ((double) sampleIndex / SAMPLING_RATE - 0.5);
-			RECTANGLE[sampleIndex] = AMPLIFICATION * (sampleIndex < SAMPLING_RATE / 10 ? 1 : -1);
+			PULSE[sampleIndex] = AMPLIFICATION * (sampleIndex < SAMPLING_RATE / 10 ? 1 : -1);
 		}
 	}
 
@@ -49,10 +51,11 @@ public class WaveGenerator implements Runnable {
 	 * @param signed
 	 * @param bigEndian
 	 * @param buffer
-	 * @param index
+	 * @param offset
+	 * @since 0.0.0
 	 */
-	private static void writeSample(double sample, int sampleSize, boolean signed, boolean bigEndian, byte[] buffer,
-			int offset) {
+	private static void writeSample(
+			double sample, int sampleSize, boolean signed, boolean bigEndian, byte[] buffer, int offset) {
 
 		switch (sampleSize) {
 
@@ -86,17 +89,19 @@ public class WaveGenerator implements Runnable {
 		}
 	}
 
-	private SourceDataLine line;
+	private final SourceDataLine line;
+
 	private double frequency;
 
 	/**
 	 * @throws LineUnavailableException
+	 * @since 0.0.0
 	 */
 	public WaveGenerator() throws LineUnavailableException {
 
-		DataLine.Info sourceDataLineInformations = new DataLine.Info(SourceDataLine.class, FORMAT);
-		line = (SourceDataLine) AudioSystem.getLine(sourceDataLineInformations);
-		line.open(FORMAT);
+		var sourceDataLineInformations = new DataLine.Info(SourceDataLine.class, FORMAT);
+		line = (SourceDataLine) getLine(sourceDataLineInformations);
+		line.open(FORMAT, SAMPLING_RATE / 50);
 		line.start();
 	}
 
@@ -149,9 +154,9 @@ public class WaveGenerator implements Runnable {
 				i3 %= SAMPLING_RATE;
 				i4 %= SAMPLING_RATE;
 
-				s0 = a0 * SINE[(int) i0];
-				s1 = a1 * SINE[(int) i1];
-				s2 = a2 * SINE[(int) i2];
+				s0 = a0 * PULSE[(int) i0];
+				s1 = a1 * PULSE[(int) i1];
+				s2 = a2 * SAWTOOTH[(int) i2];
 				s3 = a3 * SINE[(int) i3];
 				s4 = a4 * SINE[(int) i4];
 
@@ -166,6 +171,7 @@ public class WaveGenerator implements Runnable {
 
 	/**
 	 * @param frequency
+	 * @since 0.0.0
 	 */
 	public void setFrequency(double frequency) {
 		this.frequency = frequency;

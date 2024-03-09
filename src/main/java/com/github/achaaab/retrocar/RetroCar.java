@@ -1,19 +1,21 @@
-package fr.guehenneux.retrocar;
+package com.github.achaaab.retrocar;
 
 /**
- * @author Jonathan Guéhenneux
+ * @author Jonathan GuÃ©henneux
+ * @since 0.0.0
  */
 public class RetroCar {
 
+	private final RetroScreen screen;
+
 	private double x;
 	private double y;
-
-	private RetroScreen screen;
 
 	/**
 	 * @param x
 	 * @param y
 	 * @param screen
+	 * @since 0.0.0
 	 */
 	public RetroCar(double x, double y, RetroScreen screen) {
 
@@ -26,8 +28,9 @@ public class RetroCar {
 	}
 
 	/**
-	 * @param x
-	 * @param y
+	 * @param dX
+	 * @param dY
+	 * @since 0.0.0
 	 */
 	public void move(double dX, double dY) {
 
@@ -41,6 +44,7 @@ public class RetroCar {
 
 	/**
 	 * @param pixel
+	 * @since 0.0.0
 	 */
 	private void draw(boolean pixel) {
 
@@ -57,14 +61,16 @@ public class RetroCar {
 	}
 
 	/**
-	 * @return the x
+	 * @return x
+	 * @since 0.0.0
 	 */
 	public double getX() {
 		return x;
 	}
 
 	/**
-	 * @return the y
+	 * @return y
+	 * @since 0.0.0
 	 */
 	public double getY() {
 		return y;

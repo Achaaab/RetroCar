@@ -1,6 +1,5 @@
-package fr.guehenneux.retrocar;
+package com.github.achaaab.retrocar;
 
-import javafx.animation.Animation;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.application.Application;
@@ -8,16 +7,19 @@ import javafx.application.Platform;
 import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
-import javafx.util.Duration;
+
+import static javafx.animation.Animation.INDEFINITE;
+import static javafx.util.Duration.seconds;
 
 /**
- * @author Jonathan Guéhenneux
+ * @author Jonathan GuÃ©henneux
+ * @since 0.0.0
  */
 public class SimpleDisplay extends Application {
 
 	/**
-	 * @param arguments
-	 *            none
+	 * @param arguments none
+	 * @since 0.0.0
 	 */
 	public static void main(String... arguments) {
 		launch(arguments);
@@ -26,11 +28,11 @@ public class SimpleDisplay extends Application {
 	@Override
 	public void start(Stage primaryStage) throws Exception {
 
-		RetroGame game = new RetroCarGame();
-		RetroScreen screen = game.getScreen();
-		RetroScreenGui gui = new RetroScreenGui(screen);
-		Group root = new Group(gui);
-		Scene scene = new Scene(root);
+		var game = new RetroCarGame();
+		var screen = game.getScreen();
+		var gui = new RetroScreenGui(screen);
+		var root = new Group(gui);
+		var scene = new Scene(root);
 
 		scene.setOnKeyPressed(game);
 		scene.setOnKeyReleased(game);
@@ -39,18 +41,20 @@ public class SimpleDisplay extends Application {
 		primaryStage.setTitle("Simple retroscreen display");
 		primaryStage.show();
 
-		Duration frameDuration = Duration.seconds(1.0 / 60.0);
-		KeyFrame keyFrame = new KeyFrame(frameDuration, (onFinished) -> {
+		var frameDuration = seconds(1.0 / 60.0);
+
+		var keyFrame = new KeyFrame(frameDuration, (onFinished) -> {
 			game.update(frameDuration);
 			gui.draw();
 		});
-		Animation animation = new Timeline(keyFrame);
-		animation.setCycleCount(Animation.INDEFINITE);
+
+		var animation = new Timeline(keyFrame);
+		animation.setCycleCount(INDEFINITE);
 		animation.play();
 	}
 
 	@Override
-	public void stop() throws Exception {
+	public void stop() {
 
 		Platform.exit();
 		System.exit(0);

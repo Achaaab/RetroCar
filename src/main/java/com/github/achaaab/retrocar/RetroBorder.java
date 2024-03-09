@@ -1,21 +1,23 @@
-package fr.guehenneux.retrocar;
+package com.github.achaaab.retrocar;
 
 /**
- * @author Jonathan Guéhenneux
+ * @author Jonathan GuÃ©henneux
+ * @since 0.0.0
  */
 public class RetroBorder {
 
+	private final RetroScreen screen;
+
+	private final int on;
+	private final int off;
+
 	private double borderY;
-
-	private int on;
-	private int off;
-
-	private RetroScreen screen;
 
 	/**
 	 * @param screen
 	 * @param on
 	 * @param off
+	 * @since 0.0.0
 	 */
 	public RetroBorder(RetroScreen screen, int on, int off) {
 
@@ -30,7 +32,8 @@ public class RetroBorder {
 	}
 
 	/**
-	 * @param dy
+	 * @param dY
+	 * @since 0.0.0
 	 */
 	public void move(double dY) {
 
@@ -40,7 +43,7 @@ public class RetroBorder {
 	}
 
 	/**
-	 * 
+	 * @since 0.0.0
 	 */
 	private void draw() {
 
